@@ -5,7 +5,10 @@
   "bin": "bin/yaml-mate",
   "dependencies": {
     "faker": "^3.0.1",
+    "js-yaml": "^3.5.5",
     "json-refs": "^2.1.5",
-    "knex": "^0.10.0"
+    "knex": "^0.10.0",
+    "markdown-it": "^6.0.0",
+    "markdown-it-deflist": "^1.0.0"
   }
 }

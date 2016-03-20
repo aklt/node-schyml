@@ -7,5 +7,7 @@ argv.shift()
 
 var usage = "Usage: yaml-mate <faker|knex> filename.yml"
 
+argv.push(require('../lib/helpers').cb)
+
 require('../lib/main').apply(null, argv)
 
