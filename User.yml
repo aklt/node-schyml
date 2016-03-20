@@ -1,0 +1,22 @@
+#
+# 
+#
+User:
+  id:
+    description: UID
+    required: false
+    type: number
+    format: integer
+    faker: internet.$int
+  name:
+    description: User anonymized name that is shown
+    type: string
+    faker: locales.uk.company.name
+  email:
+    description: Email of the user
+    type: string
+    faker: internet.email
+  phone:
+    description: The phone number
+    type: number
+    faker: phone.phoneNumber

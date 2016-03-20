@@ -1,0 +1,11 @@
+{
+  "name": "yaml-mate",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "bin": "bin/yaml-mate",
+  "dependencies": {
+    "faker": "^3.0.1",
+    "json-refs": "^2.1.5",
+    "knex": "^0.10.0"
+  }
+}

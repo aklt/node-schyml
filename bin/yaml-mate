@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+var argv = process.argv
+
+argv.shift()
+argv.shift()
+
+var usage = "Usage: yaml-mate <faker|knex> filename.yml"
+
+require('../lib/main').apply(null, argv)
+
