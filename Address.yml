@@ -1,0 +1,17 @@
+## Address
+#
+# This is an Address
+#
+Address:
+  id:
+    description: Unique address int
+    required: false
+    type: number
+    format: integer
+    faker: internet.$int
+  street:
+    type: string
+    faker: locales.uk.company.name
+  number:
+    type: string
+    faker: locales.uk.company.name

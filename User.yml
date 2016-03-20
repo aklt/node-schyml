@@ -21,3 +21,5 @@ User:
     description: The phone number
     type: number
     faker: phone.phoneNumber
+  address:
+    $ref: Address.yml#/Address
