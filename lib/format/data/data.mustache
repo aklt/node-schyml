@@ -1,0 +1,10 @@
+
+var gen = require('{{generator}}')
+
+module.exports = function {{generator}}_{{name}} () {
+  return {
+    {{#props}}
+      {{name}}: gen.{{data}}(),
+    {{/props}}
+  }
+}

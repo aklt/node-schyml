@@ -8,18 +8,20 @@ User:
     required: false
     type: number
     format: integer
-    faker: internet.$int
+    data: random.number
   name:
     description: User anonymized name that is shown
     type: string
-    faker: locales.uk.company.name
+    data: company.companyName
   email:
     description: Email of the user
     type: string
-    faker: internet.email
+    data: internet.email
   phone:
     description: The phone number
     type: number
-    faker: phone.phoneNumber
-  address:
-    $ref: Address.yml#/Address
+    data: phone.phoneNumber
+  street:
+    $ref: Address.yml#/Address/street
+  streetNumber:
+    $ref: Address.yml#/Address/number

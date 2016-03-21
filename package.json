@@ -1,14 +1,17 @@
 {
-  "name": "yaml-mate",
+  "name": "schyml",
+  "author": "Anders Thøgersen",
+  "description": "Genarate files for modelling from a YAML file",
   "version": "0.0.1",
   "main": "lib/index.js",
-  "bin": "bin/yaml-mate",
+  "bin": "bin/schyml",
   "dependencies": {
     "faker": "^3.0.1",
     "js-yaml": "^3.5.5",
     "json-refs": "^2.1.5",
-    "knex": "^0.10.0",
     "markdown-it": "^6.0.0",
-    "markdown-it-deflist": "^1.0.0"
+    "markdown-it-deflist": "^1.0.0",
+    "mustache": "^2.2.1",
+    "node-plantuml": "^0.4.4"
   }
 }

@@ -8,10 +8,10 @@ Address:
     required: false
     type: number
     format: integer
-    faker: internet.$int
+    data: internet.$int
   street:
     type: string
-    faker: locales.uk.company.name
+    data: company.companyName
   number:
     type: string
-    faker: locales.uk.company.name
+    data: random.number
