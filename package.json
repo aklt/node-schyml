@@ -2,7 +2,7 @@
   "name": "schyml",
   "author": "Anders Thøgersen",
   "description": "Genarate files for modelling from a YAML file",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "main": "lib/index.js",
   "bin": "bin/schyml",
   "dependencies": {
