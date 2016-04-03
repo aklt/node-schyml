@@ -297,9 +297,9 @@ function lastCb (err, msg) {
   })
 }
 
-var usage = 'Usage: schyml <command> [formatter]'
 var configFileName = '.schyml'
 var configDefaultFile = path.join(__dirname, 'dot.schyml')
+var readmeFile = path.join(__dirname, 'README.md')
 
 function main (/* command, fileName, outFile, cb */) {
   var args = [].slice.call(arguments)
@@ -307,7 +307,16 @@ function main (/* command, fileName, outFile, cb */) {
   var cmd = args.shift()
   if (typeof cb !== 'function') throw new Error('cb should be a func!')
 
-  if (!cmd || cmd === 'help') return cb(null, usage)
+  if (!cmd) {
+    return cb(null, 'Usage: schyml <conf|help|yaml|model|list> args...')
+  }
+  if (cmd === 'help') {
+    return fs.readFile(readmeFile, (err, data) => {
+      if (err) return cb(err)
+      cb(null, data.toString())
+    })
+  }
+
   if (cmd === 'conf') {
     return readConfig(configFileName, configDefaultFile, process.env, cb)
   }
