@@ -1,13 +1,9 @@
 #!/usr/bin/env node
 
+var schyml = require('../')
+var cb = schyml.cb
 var argv = process.argv
-
 argv.shift()
 argv.shift()
-
-var usage = "Usage: yaml-mate <faker|knex> filename.yml"
-
-argv.push(require('../lib/helpers').cb)
-
-require('../lib/main').apply(null, argv)
-
+argv.push(cb)
+schyml.main.apply(null, argv)

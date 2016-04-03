@@ -1,17 +1,13 @@
 {
   "name": "schyml",
-  "author": "Anders Thøgersen",
+  "author": "Anders Thøgersen <anders@bladre.dk>",
   "description": "Genarate files for modelling from a YAML file",
   "version": "0.1.1",
-  "main": "lib/index.js",
+  "main": "index.js",
   "bin": "bin/schyml",
   "dependencies": {
-    "faker": "^3.0.1",
+    "handlebars": "^4.0.5",
     "js-yaml": "^3.5.5",
-    "json-refs": "^2.1.5",
-    "markdown-it": "^6.0.0",
-    "markdown-it-deflist": "^1.0.0",
-    "mustache": "^2.2.1",
-    "node-plantuml": "^0.4.4"
+    "json-refs": "^2.1.5"
   }
 }
