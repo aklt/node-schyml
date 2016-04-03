@@ -153,13 +153,19 @@ function loadResolvedModelFile (filePath, json, cb) {
   })
 }
 
-function readModelDir (dirname, justThese, json, cb) {
-  // Read all [A-Z]*.yml files in dir and return them as part of the object
-  fs.readdir(dirname, function (err, files) {
+function listModelFilesInDir (dirname, cb) {
+  fs.readdir(dirname, (err, files) => {
     if (err) return cb(err)
     files = files.filter((d) => {
       return /^[A-Z].*\.yml$/.test(d)
     })
+    cb(null, files)
+  })
+}
+
+function readModelDir (dirname, justThese, json, cb) {
+  listModelFilesInDir(dirname, (err, files) => {
+    if (err) return cb(err)
     if (justThese.length > 0) {
       var orderedFiles = []
       justThese.forEach((f1) => {
@@ -293,7 +299,7 @@ function lastCb (err, msg) {
 
 var usage = 'Usage: schyml <command> [formatter]'
 var configFileName = '.schyml'
-var configDefaultFile = path.join(path.dirname(__dirname), 'dot.schyml')
+var configDefaultFile = path.join(__dirname, 'dot.schyml')
 
 function main (/* command, fileName, outFile, cb */) {
   var args = [].slice.call(arguments)
@@ -304,6 +310,17 @@ function main (/* command, fileName, outFile, cb */) {
   if (!cmd || cmd === 'help') return cb(null, usage)
   if (cmd === 'conf') {
     return readConfig(configFileName, configDefaultFile, process.env, cb)
+  }
+
+  if (cmd === 'list') {
+    return readConfig(configFileName, configDefaultFile, process.env, (err, conf) => {
+      if (err) return cb(err)
+      listModelFilesInDir(conf.schyml.modelDir, (err, files) => {
+        if (err) return cb(err)
+        files = files.map((f1) => { return f1.replace(/\.yml$/, '') })
+        cb(null, files)
+      })
+    })
   }
 
   var jsFile
