@@ -6,6 +6,16 @@ var jsYaml = require('js-yaml')
 var jsonRefs = require('json-refs')
 var handlebars = require('handlebars')
 
+handlebars.registerHelper('lc', function (str) {
+  var res = str[0].toLowerCase() + str.slice(1)
+  return res
+})
+
+handlebars.registerHelper('uc', function (str) {
+  var res = str[0].toUpperCase() + str.slice(1)
+  return res
+})
+
 function readExistingFile (fileName, defaultFile, cb, count) {
   if (typeof count !== 'number') {
     count = 3
@@ -125,9 +135,9 @@ function readModelContents (data, json, cb) {
     result[loc].push(line)
   }
   var res = { }
-  if (result.header) res.header = result.header.join('\n') + '\n'
-  if (result.text) res.text = result.text.join('\n') + '\n'
-  if (result.footer) res.footer = result.footer.join('\n') + '\n'
+  if (result.header) res.header = result.header.join('\n')
+  if (result.text) res.text = result.text.join('\n')
+  if (result.footer) res.footer = result.footer.join('\n')
   cb(null, res)
 }
 
@@ -258,7 +268,8 @@ function runFormatterOnModel (formatter, model, cb) {
         var modelObject = m[modelName]
         var type = typeof modelObject
         if (type === 'string' || type === 'number' || Array.isArray(modelObject)) {
-          cbField(modelName, modelObject)
+          var val = cbField(modelName, modelObject)
+          if (val) m[modelName] = val
         } else {
           cbTable(modelName)
           if (modelObject.header) cbHeader(modelObject.header)
@@ -337,7 +348,7 @@ function main (/* command, fileName, outFile, cb */) {
   var hbsFile
 
   for (var i = 0; i < 2; i += 1) {
-    if (/\.js/i.test(args[i])) {
+    if (/\.js$/i.test(args[i])) {
       jsFile = args[i]
     } else if (/\.(?:hbs|handlebars|mustache)$/i.test(args[i])) {
       hbsFile = args[i]
@@ -378,7 +389,7 @@ function main (/* command, fileName, outFile, cb */) {
         })
       }
       if (jsFile) {
-        var formatter = path.join(rootDir, jsFile)
+        var formatter = path.resolve(rootDir, jsFile)
         runFormatterOnModel(formatter, model, (err, formattedModel) => {
           if (err) return cb(err)
           if (!hbsFile) return cb(null, formattedModel)
@@ -387,7 +398,9 @@ function main (/* command, fileName, outFile, cb */) {
             if (evalArgs.length > 0) {
               return requireFromString(str, hbsFile, (err, func) => {
                 if (err) return cb(err)
-                cb(null, func.apply(null, evalArgs))
+                if (typeof func === 'function') {
+                  evalArgs = func.apply(null, evalArgs)
+                }
               })
             }
             cb(null, str)
