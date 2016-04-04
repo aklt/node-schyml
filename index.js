@@ -112,7 +112,7 @@ function readModelContents (data, json, cb) {
   // header, text and footer
   var result = {}
   var s1 = data.toString()
-  var l1 = s1.split(/[\r\n]+/)
+  var l1 = s1.split(/(?:\r\n|\n)/)
   var loc = 'header'
   for (var i = 0; i < l1.length; i += 1) {
     var line = l1[i]
@@ -308,7 +308,8 @@ function main (/* command, fileName, outFile, cb */) {
   if (typeof cb !== 'function') throw new Error('cb should be a func!')
 
   if (!cmd) {
-    return cb(null, 'Usage: schyml <conf|help|yaml|model|list> args...')
+    return cb(null, 'schyml version: ' + require('./package').version + '\n' +
+                    'Usage: schyml <conf|help|yaml|model|list> args...')
   }
   if (cmd === 'help') {
     return fs.readFile(readmeFile, (err, data) => {
