@@ -16,6 +16,18 @@ handlebars.registerHelper('uc', function (str) {
   return res
 })
 
+handlebars.registerHelper('readFile', function (filename) {
+  if (!fs.existsSync(filename)) {
+    console.warn('No such path: ' + filename)
+    return null
+  }
+  return fs.readFileSync(filename).toString()
+})
+
+handlebars.registerHelper('value', function (value, defaultValue) {
+  return new handlebars.SafeString(value || defaultValue)
+})
+
 function readExistingFile (fileName, defaultFile, cb, count) {
   if (typeof count !== 'number') {
     count = 3
