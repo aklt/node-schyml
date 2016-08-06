@@ -28,6 +28,10 @@ handlebars.registerHelper('value', function (value, defaultValue) {
   return new handlebars.SafeString(value || defaultValue)
 })
 
+handlebars.registerHelper('pp', function (str) {
+  return JSON.parse(str, 0, 2).toString()
+})
+
 function readExistingFile (fileName, defaultFile, cb, count) {
   if (typeof count !== 'number') {
     count = 3
@@ -229,13 +233,13 @@ function readConfig (fileName, defaultFile, json, cb) {
   })
 }
 
-function findJsRootDir (fromDir, cb) {
+function findSchymlRootDir (fromDir, cb) {
   var fullPath = path.resolve(fromDir);
   (function loop (p) {
     if (p === '/') {
-      return cb(new Error('No package.json file found from dir ' + fullPath))
+      return cb(new Error('No .schyml file found from dir ' + fullPath))
     }
-    fs.exists(path.join(p, 'package.json'), (exists) => {
+    fs.exists(path.join(p, '.schyml'), (exists) => {
       if (exists) return cb(null, p)
       loop(path.dirname(p))
     })
@@ -244,7 +248,7 @@ function findJsRootDir (fromDir, cb) {
 
 function readModel (fileName, defaultFile, justThese, cb) {
   var json = process.env
-  findJsRootDir(process.cwd(), (err, dir) => {
+  findSchymlRootDir(process.cwd(), (err, dir) => {
     if (err) return cb(err)
     var configFile = path.join(dir, fileName)
     json.relativeBase = dir
@@ -256,6 +260,9 @@ function readModel (fileName, defaultFile, justThese, cb) {
       msg = 'Need modeldir in ' + fileName
       if (!schyml.modelDir) return cb(new Error(msg))
       var modelDir = path.join(dir, schyml.modelDir)
+      if (!fs.existsSync(modelDir)) return cb(new Error('Badness: ' + modelDir))
+      // console.warn('chdir ' + modelDir)
+      // process.chdir(modelDir)
       readModelDir(modelDir, justThese, config, (err, model) => {
         if (err) return cb(err)
         schyml.model = model
@@ -306,7 +313,13 @@ function runFormatterOnModel (formatter, model, cb) {
   })
 }
 
+var configFileName = '.schyml'
+var configDefaultFile = path.join(__dirname, 'dot.schyml')
+var readmeFile = path.join(__dirname, 'README.md')
+var options = {}
+
 function lastCb (err, msg) {
+  // console.warn('lastCb', err, options, msg)
   if (err) {
     if (!(err instanceof Error)) err = new Error(err)
     return console.warn('schyml', err.stack)
@@ -314,19 +327,25 @@ function lastCb (err, msg) {
   if (typeof msg === 'string') {
     return console.log(msg)
   }
-  readYamlString(msg, {}, (err, str) => {
-    if (err) return lastCb(err)
-    console.log(str)
-  })
+  if (options.format === 'json') {
+    console.log(JSON.stringify(msg, 0, 2))
+  } else { // if (options.format === 'json') {
+    readYamlString(msg, {}, (err, str) => {
+      if (err) return lastCb(err)
+      console.log(str)
+    })
+  }
 }
 
-var configFileName = '.schyml'
-var configDefaultFile = path.join(__dirname, 'dot.schyml')
-var readmeFile = path.join(__dirname, 'README.md')
 
 function main (/* command, fileName, outFile, cb */) {
   var args = [].slice.call(arguments)
   var cb = args.pop()
+  var showJson = args.some((arg) => {
+    return /^--json$/.test(arg)
+  })
+  if (showJson) options.format = 'json'
+  else options.format = 'yaml'
   var cmd = args.shift()
   if (typeof cb !== 'function') throw new Error('cb should be a func!')
 
@@ -343,17 +362,17 @@ function main (/* command, fileName, outFile, cb */) {
 
   if (cmd === 'conf') {
     return readConfig(configFileName, configDefaultFile, process.env, cb)
-  }
-
-  if (cmd === 'list') {
-    return readConfig(configFileName, configDefaultFile, process.env, (err, conf) => {
-      if (err) return cb(err)
-      listModelFilesInDir(conf.schyml.modelDir, (err, files) => {
+  } else {
+    if (cmd === 'list') {
+      return readConfig(configFileName, configDefaultFile, process.env, (err, conf) => {
         if (err) return cb(err)
-        files = files.map((f1) => { return f1.replace(/\.yml$/, '') })
-        cb(null, files)
+        listModelFilesInDir(conf.schyml.modelDir, (err, files) => {
+          if (err) return cb(err)
+          files = files.map((f1) => { return f1.replace(/\.yml$/, '') })
+          cb(null, files)
+        })
       })
-    })
+    }
   }
 
   var jsFile
