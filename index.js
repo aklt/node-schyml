@@ -6,6 +6,8 @@ var jsYaml = require('js-yaml')
 var jsonRefs = require('json-refs')
 var handlebars = require('handlebars')
 
+// TODO Add filename to readYaml for better errors
+
 handlebars.registerHelper('lc', function (str) {
   var res = str[0].toLowerCase() + str.slice(1)
   return res
@@ -71,6 +73,7 @@ function readYaml (string, json, cb) {
   try {
     result = jsYaml.safeLoad(string)
   } catch (e) {
+    console.warn('Error1', e)
     return cb(e)
   }
   cb(null, result)
@@ -337,7 +340,6 @@ function lastCb (err, msg) {
   }
 }
 
-
 function main (/* command, fileName, outFile, cb */) {
   var args = [].slice.call(arguments)
   var cb = args.pop()
@@ -431,6 +433,7 @@ function main (/* command, fileName, outFile, cb */) {
                 if (err) return cb(err)
                 if (typeof func === 'function') {
                   evalArgs = func.apply(null, evalArgs)
+                  cb(null, evalArgs)
                 }
               })
             }

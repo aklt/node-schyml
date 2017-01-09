@@ -1,0 +1,8 @@
+#
+# This is a config file for schyml
+#
+schyml:
+  name: schyml-config
+  description: This is a schyml project
+  # Read model files from this directory
+  modelDir: ./model
